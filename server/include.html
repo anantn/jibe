@@ -9,18 +9,35 @@
 
         function handleList(assertion, source) {
             var req = new XMLHttpRequest();
+            req.open('POST', '/repo/list', true);
+            req.onreadystatechange = function(event) {
+                if (req.readyState == 4) {
+                    if (req.status == 200) {
+                        var msg = {"action":"list", "result":req.responseText};
+                        source.postMessage(JSON.stringify(msg), origin);
+                    } else {
+                        var msg = {"action":"list", "result":"error"};
+                        source.postMessage(JSON.stringify(msg), origin);
+                    }
+                }
+            };
+            var sreq = JSON.stringify({"assertion":assertion, "audience":origin});
+            req.setRequestHeader("Content-Type", "application/json");
+            req.setRequestHeader("Content-Length", sreq.length);
+            req.send(sreq);
         };
 
         window.addEventListener("message", function(event) {
             // Only accept messaages from dashboard
             if (event.origin == origin) {
-                switch (event.data.action) {
+                var data = JSON.parse(event.data);
+                switch (data.action) {
                     case "list":
-                        handleList(event.data.assertion, event.origin);
+                        handleList(data.assertion, event.source);
                         break;
                     default:
-                        var msg = {"result":"error"};
-                        event.origin.postMessage(JSON.stringify(msg), origin);
+                        var msg = {"action":"undefined", "result":"error"};
+                        event.source.postMessage(JSON.stringify(msg), origin);
                 }
             }
         }, false);
