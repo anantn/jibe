@@ -16,7 +16,7 @@
                         var msg = {"action":"list", "result":req.responseText};
                         source.postMessage(JSON.stringify(msg), origin);
                     } else {
-                        var msg = {"action":"list", "result":"error"};
+                        var msg = {"action":"list", "error":req.responseText};
                         source.postMessage(JSON.stringify(msg), origin);
                     }
                 }
@@ -36,7 +36,7 @@
                         handleList(data.assertion, event.source);
                         break;
                     default:
-                        var msg = {"action":"undefined", "result":"error"};
+                        var msg = {"action":"undefined", "error":""};
                         event.source.postMessage(JSON.stringify(msg), origin);
                 }
             }

@@ -1,5 +1,5 @@
-var https = require('https');
 var express = require('express');
+var storage = require('./storage');
 
 var sync = express.createServer();
 sync.use(express.bodyParser());
@@ -19,43 +19,15 @@ sync.get('/js/include.js', function(req, res) {
 });
 
 sync.post('/repo/list', function(req, res) {
-    var msg = req.body;
-
-    // Check if audience is the dashboard we trust
-    if (msg.audience != 'http://localhost') {
-        res.send('Invalid audience', 401);
-    } else {
-
-        var cert = 'assertion=' + encodeURIComponent(msg.assertion) + '&audience=localhost';
-        var options = {
-            host: 'browserid.org',
-            path: '/verify',
-            method: 'POST',
-            headers: {
-                'content-type': 'application/x-www-form-urlencoded',
-                'content-length': '' + cert.length
-            }
-        };
-
-        var verify = https.request(options, function(response) {
-            response.setEncoding('utf8');
-            response.on('data', function(chunk) {
-                chunk = JSON.parse(chunk);
-                if (chunk.status != "okay") {
-                    res.send('Invalid user', 401);
-                } else {
-                    res.send('App list for ' + chunk.email);
-                }
-            });
-        });
-
-        verify.on('error', function(e) {
-            console.log('Could not make verification request ' + e.message);
-        });
-
-        verify.write(cert);
-        verify.end();
-    }
+    storage.getAppsForUser(req.body, function(result) {
+        if ('error' in result) {
+            res.send(result.error, 401);
+        } else if ('success' in result) {
+            res.send(result.success);
+        } else {
+            res.send("Unknown error", 500);
+        }
+    });
 });
 
 sync.listen(8080);

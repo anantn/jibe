@@ -16,6 +16,6 @@
 </head>
 <body>
     <div id="header">JIBE</div>
-    <p id="header"><button onclick="navigator.apps.mgmt.list(function() {});">Get Apps</button></p>
+    <p id="header"><button onclick="navigator.apps.mgmt.list(function(apps) {console.log('got apps!')});">Get Apps</button></p>
 </body>
 </html>
