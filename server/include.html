@@ -1,0 +1,29 @@
+<!doctype html public "✰">
+<!--[if lt IE 7]> <html lang="en-us" class="no-js ie6"> <![endif]-->
+<!--[if IE 7]> <html lang="en-us" class="no-js ie7"> <![endif]-->
+<!--[if IE 8]> <html lang="en-us" class="no-js ie8"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en-us" class="no-js"> <!--<![endif]-->
+<head>
+    <script type="text/javascript">
+        var origin = "http://localhost";
+
+        function handleList(assertion, source) {
+            var req = new XMLHttpRequest();
+        };
+
+        window.addEventListener("message", function(event) {
+            // Only accept messaages from dashboard
+            if (event.origin == origin) {
+                switch (event.data.action) {
+                    case "list":
+                        handleList(event.data.assertion, event.origin);
+                        break;
+                    default:
+                        var msg = {"result":"error"};
+                        event.origin.postMessage(JSON.stringify(msg), origin);
+                }
+            }
+        }, false);
+    </script>
+</head>
+</html>
