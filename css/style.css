@@ -1,7 +1,21 @@
 @charset "UTF-8";
 
-#header {
-    font-size: 8em;
+body {
+    font-size: 1.5em;
     font-family: 'Marvel', sans-serif;
     text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#header {
+    font-size: 6em;
+}
+
+#empty {
+    display: none;
+}
+
+#dashboard {
+    display: none;
 }

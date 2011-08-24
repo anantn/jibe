@@ -57,7 +57,7 @@ if (!navigator.apps.install || navigator.apps.html5Implementation) {
                     method: "list",
                     params: cert,
                     success: function(ret) {
-                        cb(ret);
+                        cb(JSON.parse(ret));
                     },
                     error: function(err, msg) {
                         console.log("Error is " + err + " with " + msg);
@@ -80,6 +80,7 @@ if (!navigator.apps.install || navigator.apps.html5Implementation) {
                         obj.onsuccess(ret);
                     },
                     error: function(err, msg) {
+                        obj.onerror(msg);
                         console.log("Error is " + err + " with " + msg);
                     }
                 })

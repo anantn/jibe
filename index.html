@@ -18,6 +18,22 @@
 </head>
 <body>
     <div id="header">JIBE</div>
-    <p id="header"><button onclick="navigator.apps.mgmt.list(function(apps) {console.log('got apps!')});">Get Apps</button></p>
+    <div id="content">
+        <div id="login">
+            <p id="msg">To access your apps, please login using BrowserID!</p>
+            <a href="#" onclick="login();"><img id="button" src="css/signin.png"/></a>
+        </div>
+        <div id="empty">
+            <p>You have no apps installed! Would you like to install a few?</p>
+            <div id="market" class="grid">
+            </div>
+        </div>
+        <div id="dashboard">
+            <p>Click to launch:</p>
+            <div id="apps" class="grid">
+            </div>
+        </div>
+    </div>
 </body>
+<script src="js/dashboard.js" type="text/javascript"></script>
 </html>

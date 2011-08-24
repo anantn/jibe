@@ -24,7 +24,6 @@
             req.onreadystatechange = function(event) {
                 if (req.readyState == 4) {
                     if (req.status == 200) {
-                        alert("sup");
                         trans.complete(req.responseText);
                     } else {
                         trans.error(req.responseText);
