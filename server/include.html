@@ -7,6 +7,10 @@
     <script type="text/javascript">
         var origin = "http://localhost";
 
+        function handleInstall(record, source) {
+            
+        };
+
         function handleList(assertion, source) {
             var req = new XMLHttpRequest();
             req.open('POST', '/repo/list', true);
@@ -34,6 +38,9 @@
                 switch (data.action) {
                     case "list":
                         handleList(data.assertion, event.source);
+                        break;
+                    case "install":
+                        handleList(data.record, event.source);
                         break;
                     default:
                         var msg = {"action":"undefined", "error":""};

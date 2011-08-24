@@ -13,6 +13,7 @@ if (!navigator.apps.install || navigator.apps.html5Implementation) {
 
         var _callbacks = {};
         var _server = "http://localhost:8080";
+        var _assertion = {'cert':null, 'time':null};
         var _iframe = document.createElement('iframe');
 
         /* Setup event listener for postMessage */
@@ -36,15 +37,42 @@ if (!navigator.apps.install || navigator.apps.html5Implementation) {
             document.body.appendChild(_iframe);
         }, false);
 
-        function callList(cb) {
-            navigator.id.getVerifiedEmail(function(assertion) {
-                if (assertion) {
-                    _callbacks["list"] = cb;
-                    var msg = {"action":"list", "assertion":assertion};
-                    _iframe.contentWindow.postMessage(JSON.stringify(msg), _server);
-                } else {
-                    cb(false);
+        /* Get a BrowserID assertion if we haven't got one for 5 mins */
+        function _doLogin(cb) {
+            if (!_assertion.cert ||
+                (_assertion.time && (Date.now() - _assertion.time > 300000))) {
+                navigator.id.getVerifiedEmail(function(ret) {
+                    if (ret) {
+                        _assertion.cert = ret;
+                        _assertion.time = Date.now();
+                        cb(_assertion.cert);
+                    } else {
+                        cb(false);
+                    }
                 }
+            } else {
+                cb(_assertion.cert);
+            }
+        }
+
+        function callList(cb) {
+            _doLogin(function(cert) {
+                if (!cert) throw "BrowserID failed";
+                _callbacks["list"] = cb;
+                var msg = {"action":"list", "assertion":assertion};
+                _iframe.contentWindow.postMessage(JSON.stringify(msg), _server);
+            });
+        }
+
+        function callInstall(obj) {
+            /* Is there a way to combine BrowserID & install prompts here? */
+            _doLogin(function(cert) {
+                if (!cert) throw "BrowserID failed";
+                _callbacks["install"] = obj.onsuccess;
+                var msg = {"action":"list", "record":{
+                    "url":obj.url, "install_data":obj.install_data
+                }};
+                _iframe.contentWindow.postMessage(JSON.stringify(msg), _server);
             });
         }
 
