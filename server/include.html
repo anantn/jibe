@@ -4,50 +4,42 @@
 <!--[if IE 8]> <html lang="en-us" class="no-js ie8"> <![endif]-->
 <!--[if gt IE 8]><!--> <html lang="en-us" class="no-js"> <!--<![endif]-->
 <head>
+    <script src="js/jschannel.js" type="text/javascript"></script>
     <script type="text/javascript">
-        var origin = "http://localhost";
+        var _channel = Channel.build({
+            window: window.parent,
+            origin: "*",
+            scope: "openwebapps"
+        });
 
-        function handleInstall(record, source) {
+        _channel.bind("install", function(trans, param) {
             
-        };
+        });
 
-        function handleList(assertion, source) {
+        _channel.bind("list", function(trans, param) {
+            trans.delayReturn(true);
+
             var req = new XMLHttpRequest();
             req.open('POST', '/repo/list', true);
             req.onreadystatechange = function(event) {
                 if (req.readyState == 4) {
                     if (req.status == 200) {
-                        var msg = {"action":"list", "result":req.responseText};
-                        source.postMessage(JSON.stringify(msg), origin);
+                        alert("sup");
+                        trans.complete(req.responseText);
                     } else {
-                        var msg = {"action":"list", "error":req.responseText};
-                        source.postMessage(JSON.stringify(msg), origin);
+                        trans.error(req.responseText);
                     }
                 }
             };
-            var sreq = JSON.stringify({"assertion":assertion, "audience":origin});
+
+            /* Note that the audience is localhost not localhost:8080
+             * This will be fixed by a new BrowserID feature which allows
+             * sites to request authorization for other domains. */
+            var sreq = JSON.stringify({"assertion": param, "audience": "http://localhost"});
             req.setRequestHeader("Content-Type", "application/json");
             req.setRequestHeader("Content-Length", sreq.length);
             req.send(sreq);
-        };
-
-        window.addEventListener("message", function(event) {
-            // Only accept messaages from dashboard
-            if (event.origin == origin) {
-                var data = JSON.parse(event.data);
-                switch (data.action) {
-                    case "list":
-                        handleList(data.assertion, event.source);
-                        break;
-                    case "install":
-                        handleList(data.record, event.source);
-                        break;
-                    default:
-                        var msg = {"action":"undefined", "error":""};
-                        event.source.postMessage(JSON.stringify(msg), origin);
-                }
-            }
-        }, false);
+        });
     </script>
 </head>
 </html>

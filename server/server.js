@@ -14,6 +14,10 @@ sync.get('/include.html', function(req, res) {
     res.sendfile('include.html');
 });
 
+sync.get('/js/jschannel.js', function(req, res) {
+    res.sendfile('jschannel.js');    
+});
+
 sync.get('/js/include.js', function(req, res) {
     res.sendfile('include.js');	
 });

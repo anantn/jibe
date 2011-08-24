@@ -11,30 +11,25 @@ if (!navigator.apps.install || navigator.apps.html5Implementation) {
 
     navigator.apps = (function() {
 
-        var _callbacks = {};
+        var _channel = null;
         var _server = "http://localhost:8080";
         var _assertion = {'cert':null, 'time':null};
         var _iframe = document.createElement('iframe');
-
-        /* Setup event listener for postMessage */
-        window.addEventListener("message", function(event) {
-            if (event.origin != _server) return;
-            
-            var data = JSON.parse(event.data);
-            if (data.action in _callbacks && _callbacks[data.action]) {
-                if ("success" in data) _callbacks[data.action](data.success);
-                else _callbacks[data.action](false);
-                _callbacks[data.action] = null;
-            } else {
-                console.log("Invalid response from postMessage! " + data);
-            }
-        }, false);
 
         /* Insert iframe from app sync server for postMessage */
         window.addEventListener("load", function() {
             _iframe.src = _server + "/include.html"
             _iframe.style.display = "none";
             document.body.appendChild(_iframe);
+            
+            _channel = Channel.build({
+                window: _iframe.contentWindow,
+                origin: "*",
+                scope: "openwebapps",
+                onReady: function() {
+                    console.log("Channel ready");
+                }
+            });
         }, false);
 
         /* Get a BrowserID assertion if we haven't got one for 5 mins */
@@ -49,30 +44,45 @@ if (!navigator.apps.install || navigator.apps.html5Implementation) {
                     } else {
                         cb(false);
                     }
-                }
+                });
             } else {
                 cb(_assertion.cert);
-            }
+            }      
         }
 
         function callList(cb) {
             _doLogin(function(cert) {
-                if (!cert) throw "BrowserID failed";
-                _callbacks["list"] = cb;
-                var msg = {"action":"list", "assertion":assertion};
-                _iframe.contentWindow.postMessage(JSON.stringify(msg), _server);
+                if (!cert) throw "BrowserID login failed";
+                _channel.call({
+                    method: "list",
+                    params: cert,
+                    success: function(ret) {
+                        cb(ret);
+                    },
+                    error: function(err, msg) {
+                        console.log("Error is " + err + " with " + msg);
+                    }
+                });
             });
         }
 
         function callInstall(obj) {
             /* Is there a way to combine BrowserID & install prompts here? */
             _doLogin(function(cert) {
-                if (!cert) throw "BrowserID failed";
-                _callbacks["install"] = obj.onsuccess;
-                var msg = {"action":"list", "record":{
-                    "url":obj.url, "install_data":obj.install_data
-                }};
-                _iframe.contentWindow.postMessage(JSON.stringify(msg), _server);
+                if (!cert) throw "BrowserID login failed";
+                _channel.call({
+                    method: "install",
+                    params: JSON.stringify({
+                        url: obj.url,
+                        install_data: obj.install_data
+                    }),
+                    success: function(ret) {
+                        obj.onsuccess(ret);
+                    },
+                    error: function(err, msg) {
+                        console.log("Error is " + err + " with " + msg);
+                    }
+                })
             });
         }
 
