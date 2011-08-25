@@ -51,7 +51,7 @@ function getAppsForUser(msg, cb)
                     cb({'error': err});
                 } else {
                     if (!reply) reply = {};
-                    cb({'success': reply});
+                    cb({'success': JSON.stringify(reply)});
                 }
             });
         } else {
