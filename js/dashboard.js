@@ -10,6 +10,14 @@ function login()
             document.getElementById("login").style.display = "none";
             if (apps.length == 0) {
                 document.getElementById("empty").style.display = "block";
+                var candidates = document.getElementsByClassName("app");
+                for (var i = 0; i < candidates.length; i++) {
+                    var app = candidates[i];
+                    var manifest = app.getAttribute("manifest");
+                    app.onclick = navigator.apps.install({
+                        url: manifest
+                    });
+                }
             } else {
                 document.getElementById("dashboard").style.display = "block";
                 // Dashboard logic

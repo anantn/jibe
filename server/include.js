@@ -25,10 +25,7 @@ if (!navigator.apps.install || navigator.apps.html5Implementation) {
             _channel = Channel.build({
                 window: _iframe.contentWindow,
                 origin: "*",
-                scope: "openwebapps",
-                onReady: function() {
-                    console.log("Channel ready");
-                }
+                scope: "openwebapps"
             });
         }, false);
 

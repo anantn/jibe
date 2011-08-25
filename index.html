@@ -19,20 +19,44 @@
 <body>
     <div id="header">JIBE</div>
     <div id="content">
+
         <div id="login">
             <p id="msg">To access your apps, please login using BrowserID!</p>
             <a href="#" onclick="login();"><img id="button" src="css/signin.png"/></a>
         </div>
+
         <div id="empty">
             <p>You have no apps installed! Would you like to install a few?</p>
             <div id="market" class="grid">
+                <span class="app" manifest="http://tubagames.net/barfight_manifest.php">
+                    <img src="http://tubagames.net/barfight/images/webappicon_128.png">
+                    <div class="name">BarFight</div>
+                </span>
+                <span class="app" manifest="http://www.davesgalaxy.com/site_media/mozilla.manifest">
+                    <img src="http://www.davesgalaxy.com/site_media/icon128.png">
+                    <div class="name">Dave's Galaxy</div>
+                </span>
+                <span class="app" manifest="http://www.matthewhollett.com/favimon/manifest.webapp">
+                    <img src="http://www.matthewhollett.com/favimon/images/favimon-icon-128.png">
+                    <div class="name">Favimon (beta)</div>
+                </span>
+                <span class="app" manfest="http://www.paulbrunt.co.uk/steamcube/manifest.webapp">
+                    <img src="http://www.paulbrunt.co.uk/steamcube/icon.png">
+                    <div class="name">Steamcube</div>
+                </span>
+                <span class="app" manifest="http://www.limejs.com/roundball.webapp">
+                    <img src="http://www.limejs.com/static/roundball_icon_128.png">
+                    <div class="name">Roundball</div>
+                </span>
             </div>
         </div>
+
         <div id="dashboard">
             <p>Click to launch:</p>
             <div id="apps" class="grid">
             </div>
         </div>
+
     </div>
 </body>
 <script src="js/dashboard.js" type="text/javascript"></script>
