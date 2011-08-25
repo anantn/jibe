@@ -1,4 +1,12 @@
 
+function empty(o)
+{
+    for (var i in o) 
+        if (o.hasOwnProperty(i))
+            return false;
+    return true;
+}
+
 function login()
 {
     var img = document.getElementById("button");
@@ -8,15 +16,30 @@ function login()
         if (apps !== false) {
             var board = document.getElementById("dashboard");
             document.getElementById("login").style.display = "none";
-            if (apps.length == 0) {
+
+            if (empty(apps)) {
                 document.getElementById("empty").style.display = "block";
                 var candidates = document.getElementsByClassName("app");
                 for (var i = 0; i < candidates.length; i++) {
                     var app = candidates[i];
                     var manifest = app.getAttribute("manifest");
-                    app.onclick = navigator.apps.install({
-                        url: manifest
-                    });
+
+                    function makeInstallFunc(manifest)
+                    {
+                        return function() {
+                            navigator.apps.install({
+                                url: manifest,
+                                install_data: {},
+                                onsuccess: function(done) {
+                                    alert("Hooray, app " + done + " installed!");
+                                },
+                                onerror: function(err) {
+                                    alert("Oh no, there was an error " + err);
+                                }
+                            });
+                        }
+                    };
+                    app.onclick = makeInstallFunc(manifest);
                 }
             } else {
                 document.getElementById("dashboard").style.display = "block";

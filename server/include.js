@@ -71,7 +71,9 @@ if (!navigator.apps.install || navigator.apps.html5Implementation) {
                     method: "install",
                     params: JSON.stringify({
                         url: obj.url,
-                        install_data: obj.install_data
+                        origin: window.location.toString(),
+                        installData: obj.install_data,
+                        assertion: cert
                     }),
                     success: function(ret) {
                         obj.onsuccess(ret);
@@ -85,7 +87,7 @@ if (!navigator.apps.install || navigator.apps.html5Implementation) {
         }
 
         return {
-            //install: callInstall,
+            install: callInstall,
             //amInstalled: callAmInstalled,
             mgmt: {
                 //launch: callLaunch,

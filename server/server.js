@@ -14,12 +14,20 @@ sync.get('/include.html', function(req, res) {
     res.sendfile('include.html');
 });
 
-sync.get('/js/jschannel.js', function(req, res) {
-    res.sendfile('jschannel.js');    
+sync.get('/js/include.js', function(req, res) {
+    res.sendfile('include.js'); 
 });
 
-sync.get('/js/include.js', function(req, res) {
-    res.sendfile('include.js');	
+sync.get('/js/jschannel.js', function(req, res) {
+    res.sendfile('lib/jschannel.js');    
+});
+
+sync.get('/js/manifest.js', function(req, res) {
+    res.sendfile('lib/manifest.js');
+});
+
+sync.get('/js/urlmatch.js', function(req, res) {
+    res.sendfile('lib/urlmatch.js');
 });
 
 sync.post('/repo/list', function(req, res) {
@@ -32,6 +40,18 @@ sync.post('/repo/list', function(req, res) {
             res.send("Unknown error", 500);
         }
     });
+});
+
+sync.post('/repo/install', function(req, res) {
+    storage.installAppForUser(req.body, function(result) {
+        if ('error' in result) {
+            res.send(result.error, 401);
+        } else if ('success' in result) {
+            res.send(result.success);
+        } else {
+            res.send("Unknown error", 500);
+        }
+    });  
 });
 
 sync.listen(8080);

@@ -6,15 +6,10 @@ client.on("error", function(err) {
     console.log("Error " + err);    
 });
 
-function getAppsForUser(msg, cb)
+function verifyBrowserID(assertion, cb)
 {
-    // Check if audience is the dashboard we trust
-    if (msg.audience != 'http://localhost') {
-        cb({'error': 'Invalid audience'});
-        return;
-    }
-
-    var cert = 'assertion=' + encodeURIComponent(msg.assertion) + '&audience=localhost';
+    // Audience hardcoded to localhost, needs to change
+    var cert = 'assertion=' + encodeURIComponent(assertion) + '&audience=localhost';
     var options = {
         host: 'browserid.org',
         path: '/verify',
@@ -24,7 +19,7 @@ function getAppsForUser(msg, cb)
             'content-length': '' + cert.length
         }
     };
-
+    
     var verify = https.request(options, function(response) {
         response.setEncoding('utf8');
         response.on('data', function(chunk) {
@@ -32,11 +27,7 @@ function getAppsForUser(msg, cb)
             if (chunk.status != 'okay') {
                 cb({'error': 'Invalid user'});
             } else {
-                client.get(chunk.email, function(err, reply) {
-                    console.log("Got apps for user " + chunk.email + ": " + reply);
-                    if (!reply) reply = [];
-                    cb({'success': reply});
-                });
+                cb({'success': chunk.email});
             }
         });
     });
@@ -49,4 +40,57 @@ function getAppsForUser(msg, cb)
     verify.end();
 }
 
+function getAppsForUser(msg, cb)
+{
+    // FIXME: msg.audience is unused
+    verifyBrowserID(msg.assertion, function(ret) {
+        if ('success' in ret) {
+            var email = ret['success'];
+            client.get(email, function(err, reply) {
+                if (err) {
+                    cb({'error': err});
+                } else {
+                    if (!reply) reply = {};
+                    cb({'success': reply});
+                }
+            });
+        } else {
+            cb(ret);
+        }
+    });
+}
+
+function installAppForUser(msg, cb)
+{
+    verifyBrowserID(msg.assertion, function(ret) {
+        if ('success' in ret) {
+            var email = ret['success'];
+            client.get(email, function(err, reply) {
+                if (err) {
+                    cb({'error': err});
+                } else {
+                    if (!reply) reply = {};
+                    
+                    var apps = reply;
+                    apps[msg.appOrigin] = {
+                        manifest: msg.manifest,
+                        installData: msg.installData,
+                        installOrigin: msg.installOrigin
+                    };
+                    client.set(email, apps, function(err, reply) {
+                        if (err) {
+                            cb({'error': err});
+                        } else {
+                            cb({'success': msg.appOrigin});
+                        }
+                    });
+                }
+            });
+        } else {
+            cb(ret);
+        }
+    });
+}
+
 exports.getAppsForUser = getAppsForUser;
+exports.installAppForUser = installAppForUser;
