@@ -54,6 +54,7 @@ if (!navigator.apps.install || navigator.apps.html5Implementation) {
                     method: "list",
                     params: cert,
                     success: function(ret) {
+                        // Wut?
                         cb(JSON.parse(ret));
                     },
                     error: function(err, msg) {

@@ -24,14 +24,14 @@ function login()
                     var app = candidates[i];
                     var manifest = app.getAttribute("manifest");
 
-                    function makeInstallFunc(manifest)
+                    function makeInstallFunc(appSpan, manifest)
                     {
                         return function() {
                             navigator.apps.install({
                                 url: manifest,
                                 install_data: {},
                                 onsuccess: function(done) {
-                                    alert("Hooray, app " + done + " installed!");
+                                    appSpan.style.display = "none";
                                 },
                                 onerror: function(err) {
                                     alert("Oh no, there was an error " + err);
@@ -39,11 +39,58 @@ function login()
                             });
                         }
                     };
-                    app.onclick = makeInstallFunc(manifest);
+                    app.onclick = makeInstallFunc(app, manifest);
                 }
             } else {
+                // Dashboard logic. IconGrid.js can come in handy!
+                function getIconForSize(targetSize, minifest)
+                {
+                    if (minifest && minifest.icons) {
+                        var bestFit = 0;
+                        var biggestFallback = 0;
+                        for (var z in minifest.icons) {
+                            var size = parseInt(z, 10);
+                            if (bestFit == 0 || size >= targetSize) {
+                                bestFit = size;
+                            }
+                            if (biggestFallback == 0 || size > biggestFallback) {
+                                biggestFallback = size;
+                            }
+                        }
+                        if (bestFit !== 0) return minifest.icons[bestFit];
+                        if (biggestFallback !== 0) return minifest.icons[biggestFallback];
+                    }
+                }
+                
+                function makeLaunchFunction(url)
+                {
+                    return function() {
+                        window.open(url);
+                    }
+                }
+
+                var grid = document.getElementById("apps");
                 document.getElementById("dashboard").style.display = "block";
-                // Dashboard logic
+                for (var origin in apps) {
+                    var app = apps[origin];
+                    var appSpan = document.createElement("span");
+                    appSpan.setAttribute("class", "app");
+                    var appIcon = document.createElement("img");
+                    appIcon.src = origin + getIconForSize(48, app.manifest);
+                    var appName = document.createElement("div");
+                    appName.setAttribute("class", "name");
+                    appName.innerHTML = app.manifest.name;
+
+                    appSpan.appendChild(appIcon);
+                    appSpan.appendChild(appName);
+                    grid.appendChild(appSpan);
+
+                    var url = origin;
+                    if ('launch_path' in app.manifest) {
+                        url += app.manifest.launch_path;
+                    }
+                    appSpan.onclick = makeLaunchFunction(url);
+                }
             }
         } else {
             document.getElementById("msg").innerHTML =

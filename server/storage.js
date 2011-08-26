@@ -50,8 +50,8 @@ function getAppsForUser(msg, cb)
                 if (err) {
                     cb({'error': err});
                 } else {
-                    if (!reply) reply = {};
-                    cb({'success': JSON.stringify(reply)});
+                    if (!reply) reply = "{}";
+                    cb({'success': JSON.parse(reply)});
                 }
             });
         } else {
@@ -69,15 +69,15 @@ function installAppForUser(msg, cb)
                 if (err) {
                     cb({'error': err});
                 } else {
-                    if (!reply) reply = {};
+                    if (!reply) reply = "{}";
                     
-                    var apps = reply;
+                    var apps = JSON.parse(reply);
                     apps[msg.appOrigin] = {
                         manifest: msg.manifest,
                         installData: msg.installData,
                         installOrigin: msg.installOrigin
                     };
-                    client.set(email, apps, function(err, reply) {
+                    client.set(email, JSON.stringify(apps), function(err, reply) {
                         if (err) {
                             cb({'error': err});
                         } else {
