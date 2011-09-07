@@ -18,7 +18,7 @@ if (!navigator.apps.install || navigator.apps.html5Implementation) {
 
         /* Insert iframe from app sync server for postMessage */
         window.addEventListener("load", function() {
-            _iframe.src = _server + "/include.html"
+            _iframe.src = _server + "/include.html";
             _iframe.style.display = "none";
             document.body.appendChild(_iframe);
             
@@ -47,18 +47,22 @@ if (!navigator.apps.install || navigator.apps.html5Implementation) {
             }      
         }
 
+        function getAudience() {
+            return location.host + (location.port ? ':' + location.port : '');
+        }
+
         function callList(cb) {
             _doLogin(function(cert) {
                 if (!cert) throw "BrowserID login failed";
                 _channel.call({
                     method: "list",
-                    params: cert,
+                    params: {assertion: cert, audience: getAudience()},
                     success: function(ret) {
                         // Wut?
                         cb(JSON.parse(ret));
                     },
                     error: function(err, msg) {
-                        console.log("Error is " + err + " with " + msg);
+                        console.log("Error .list is " + err + " with " + msg);
                     }
                 });
             });
@@ -74,16 +78,17 @@ if (!navigator.apps.install || navigator.apps.html5Implementation) {
                         url: obj.url,
                         origin: window.location.toString(),
                         installData: obj.install_data,
-                        assertion: cert
+                        assertion: cert,
+                        audience: getAudience()
                     }),
                     success: function(ret) {
                         obj.onsuccess(ret);
                     },
                     error: function(err, msg) {
                         obj.onerror(msg);
-                        console.log("Error is " + err + " with " + msg);
+                        console.log("Error .install is " + err + " with " + msg);
                     }
-                })
+                });
             });
         }
 

@@ -47,7 +47,7 @@ sync.get('/util/fetch', function(req, res) {
     } else if (path.protocol == 'https:') {
         fetcher = https;
     } else {
-        res.send('Invalid protocol', 500);
+        res.send('Invalid protocol: ' + path.protocol, 500);
         return;
     }
 
@@ -90,4 +90,5 @@ sync.post('/repo/install', function(req, res) {
     });  
 });
 
+console.log('Serving on http://localhost:8080');
 sync.listen(8080);

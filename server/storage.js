@@ -6,10 +6,9 @@ client.on("error", function(err) {
     console.log("Error " + err);    
 });
 
-function verifyBrowserID(assertion, cb)
+function verifyBrowserID(assertion, audience, cb)
 {
-    // Audience hardcoded to localhost, needs to change
-    var cert = 'assertion=' + encodeURIComponent(assertion) + '&audience=localhost';
+    var cert = 'assertion=' + encodeURIComponent(assertion) + '&audience=' + encodeURIComponent(audience);
     var options = {
         host: 'browserid.org',
         path: '/verify',
@@ -22,12 +21,16 @@ function verifyBrowserID(assertion, cb)
     
     var verify = https.request(options, function(response) {
         response.setEncoding('utf8');
+        var allData = '';
         response.on('data', function(chunk) {
-            chunk = JSON.parse(chunk);
-            if (chunk.status != 'okay') {
+            allData += chunk;
+        });
+        response.on('end', function () {
+            var data = JSON.parse(allData);
+            if (data.status != 'okay') {
                 cb({'error': 'Invalid user'});
             } else {
-                cb({'success': chunk.email});
+                cb({'success': data.email});
             }
         });
     });
@@ -42,8 +45,7 @@ function verifyBrowserID(assertion, cb)
 
 function getAppsForUser(msg, cb)
 {
-    // FIXME: msg.audience is unused
-    verifyBrowserID(msg.assertion, function(ret) {
+    verifyBrowserID(msg.assertion, msg.audience, function(ret) {
         if ('success' in ret) {
             var email = ret['success'];
             client.get(email, function(err, reply) {
@@ -62,7 +64,7 @@ function getAppsForUser(msg, cb)
 
 function installAppForUser(msg, cb)
 {
-    verifyBrowserID(msg.assertion, function(ret) {
+    verifyBrowserID(msg.assertion, msg.audience, function(ret) {
         if ('success' in ret) {
             var email = ret['success'];
             client.get(email, function(err, reply) {

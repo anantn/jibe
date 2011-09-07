@@ -84,7 +84,7 @@
             /* Note that the audience is localhost not localhost:8080
              * This will be fixed by a new BrowserID feature which allows
              * sites to request authorization for other domains. */
-            var sreq = JSON.stringify({"assertion": param, "audience": "http://localhost"});
+            var sreq = JSON.stringify({"assertion": param.assertion, "audience": param.audience});
             req.setRequestHeader("Content-Type", "application/json");
             req.setRequestHeader("Content-Length", sreq.length);
             req.send(sreq);
