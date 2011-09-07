@@ -48,7 +48,7 @@
 // check if ambient TypedStorage or not
 // by looking for 'require' keyword from jetpack
 if (typeof require !== "undefined") {
-    var {URLParse} = require("./urlmatch");
+    var URLParse = require("./urlmatch").URLParse;
 }
 
 ;var Manifest = (function() {
