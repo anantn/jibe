@@ -1,11 +1,22 @@
 @charset "UTF-8";
 
 body {
-    font-size: 1.5em;
     font-family: 'Marvel', sans-serif;
-    text-align: center;
     margin-left: auto;
     margin-right: auto;
+    text-align: center;
+}
+
+.msg {
+    font-size: 1.5em;
+}
+
+.well {
+    background-color: #F2F2F2;
+    background-image: -moz-linear-gradient(center top , #FFFFFF 0%, #F2F2F2 100%);
+    border: 1px solid #BBBBBB;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset;
 }
 
 #header {
@@ -22,6 +33,10 @@ body {
 
 #dashboard {
     display: none;
+}
+
+#apps {
+    display: block;
 }
 
 .app {

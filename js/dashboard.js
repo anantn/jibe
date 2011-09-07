@@ -69,6 +69,37 @@ function login()
                     }
                 }
 
+                /* IconGrid */
+                var appData = {
+                    getItemList: function(cb) {
+                        var list = {};
+                        for (var origin in apps) {
+                            var app = apps[origin];
+                            list[origin] = {
+                                itemTitle: app.manifest.name,
+                                itemImgURL: origin + getIconForSize(48, app.manifest)
+                            };
+                        }
+                        cb(list);
+                    },
+                    openItem: function(itemID) {
+                        var url = itemID;
+                        var app = apps[itemID];
+                        if ('launch_path' in app.manifest) {
+                            url += app.manifest.launch_path;
+                        }
+                        window.open(url);
+                    }
+                };
+                var grid = $("#apps");
+                document.getElementById("dashboard").style.display = "block";
+                var gridLayout = new GridLayout(grid.width(), grid.height(), 6, 3);
+                var gridDash = new IconGrid("appDashboard", grid, appData, gridLayout);
+
+                gridDash.initialize();
+                gridDash.refresh();
+
+                /*
                 var grid = document.getElementById("apps");
                 document.getElementById("dashboard").style.display = "block";
                 for (var origin in apps) {
@@ -91,6 +122,7 @@ function login()
                     }
                     appSpan.onclick = makeLaunchFunction(url);
                 }
+                */
             }
         } else {
             document.getElementById("msg").innerHTML =

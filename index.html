@@ -8,9 +8,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1" >
     <title dir="ltr">Jibe - The Dashboard that Syncs</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Marvel:400,700' type='text/css'>
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Marvel:400,700" type="text/css">
     <link rel="stylesheet" media="screen" href="css/style.css" >
+    <link rel="stylesheet" media="screen" href="icongrid/icongrid.css" >
 
+    <script src="icongrid/base32.js" type="text/javascript"></script>
+    <script src="icongrid/jquery-1.4.2.min.js" type="text/javascript"></script>
+    <script src="icongrid/icongrid.js" type="text/javascript"></script>
+    
     <script src="js/jschannel.js" type="text/javascript"></script>
     <script src="https://browserid.org/include.js" type="text/javascript"></script>
     <script src="http://localhost:8080/js/include.js" type="text/javascript"></script>
@@ -20,41 +25,41 @@
     <div id="content">
 
         <div id="login">
-            <p id="msg">To access your apps, please login using BrowserID!</p>
+            <p class="msg">To access your apps, please login using BrowserID!</p>
             <a href="#" onclick="login();"><img id="button" src="css/signin.png"/></a>
         </div>
 
         <div id="empty">
-            <p>You have no apps installed! Would you like to install a few?</p>
+            <p class="msg">You have no apps installed! Would you like to install a few?</p>
             <div id="market" class="grid">
                 <!-- the manifest doesn't have the right content-type:
                 <span class="app" manifest="http://tubagames.net/barfight_manifest.php">
                     <img src="http://tubagames.net/barfight/images/webappicon_128.png">
-                    <div class="name">BarFight</div>
+                    <div class="msg">BarFight</div>
                 </span>
                     -->
                 <span class="app" manifest="http://www.davesgalaxy.com/site_media/mozilla.manifest">
                     <img src="http://www.davesgalaxy.com/site_media/icon128.png">
-                    <div class="name">Dave's Galaxy</div>
+                    <div class="msg">Dave's Galaxy</div>
                 </span>
                 <span class="app" manifest="http://www.matthewhollett.com/favimon/manifest.webapp">
                     <img src="http://www.matthewhollett.com/favimon/images/favimon-icon-128.png">
-                    <div class="name">Favimon (beta)</div>
+                    <div class="msg">Favimon (beta)</div>
                 </span>
                 <span class="app" manifest="http://www.paulbrunt.co.uk/steamcube/manifest.webapp">
                     <img src="http://www.paulbrunt.co.uk/steamcube/icon.png">
-                    <div class="name">Steamcube</div>
+                    <div class="msg">Steamcube</div>
                 </span>
                 <span class="app" manifest="http://www.limejs.com/roundball.webapp">
                     <img src="http://www.limejs.com/static/roundball_icon_128.png">
-                    <div class="name">Roundball</div>
+                    <div class="msg">Roundball</div>
                 </span>
             </div>
         </div>
 
         <div id="dashboard">
-            <p>Click to launch:</p>
-            <div id="apps" class="grid">
+            <p class="msg">Click to launch:</p>
+            <div id="apps" class="dashboardclipper well" style="width:800px; height:400px;">
             </div>
         </div>
 
