@@ -1,0 +1,3 @@
+[submodule "icongrid"]
+	path = icongrid
+	url = https://github.com/mozilla/icongrid.git
