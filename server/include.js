@@ -12,7 +12,7 @@ if (!navigator.apps.install || navigator.apps.html5Implementation) {
     navigator.apps = (function() {
 
         var _channel = null;
-        var _server = "http://localhost:8080";
+        var _server = "http://jibe.kix.in:8080";
         var _assertion = {'cert':null, 'time':null};
         var _iframe = document.createElement('iframe');
 
