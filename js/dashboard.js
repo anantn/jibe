@@ -93,7 +93,7 @@ function login()
                 };
                 var grid = $("#apps");
                 document.getElementById("dashboard").style.display = "block";
-                var gridLayout = new GridLayout(grid.width(), grid.height(), 6, 3);
+                var gridLayout = new GridLayout(grid.width(), grid.height(), 4, 2);
                 var gridDash = new IconGrid("appDashboard", grid, appData, gridLayout);
 
                 gridDash.initialize();
