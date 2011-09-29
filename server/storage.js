@@ -10,7 +10,7 @@ function verifyBrowserID(assertion, audience, cb)
 {
     var cert = 'assertion=' + encodeURIComponent(assertion) + '&audience=' + encodeURIComponent(audience);
     var options = {
-        host: 'dev.diresworb.org',
+        host: 'browserid.org',
         path: '/verify',
         method: 'POST',
         headers: {
